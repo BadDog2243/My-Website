@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>Heydin Anderson - Watch Youtube!</title>
+	<link rel="stylesheet" type="text/css" href="../../css/default.css">
+	<link rel="shortcut icon" href="../../pictures/icon.ico" type="image/x-icon">
+	<link rel="icon" href="../../pictures/icon.ico" type="image/x-icon">
+
+</head>
+
+<body style="text-align: center; background: black">
+	<center>
+	<h1 class="logo">Heydin Anderson | Watch Youtube</h1>
+	</center>
+	<hr />
+	<div class="navbar">
+		<ul>
+			<li><a href="../../index.html">Home</a></li>
+			<li class="bottom"><a href="../../projects.html">Projects</a></li>
+			<li><a href="../Pong/Pong.html"><h3 class="LPJ">PONG!</h3></a></li>
+			<li><a href="projects/WatchYoutube/WatchYoutube.html" class="activepage" ><h3 class="LPJ">Youtube</h3></a></li>
+		</ul>
+	</div>
+
+	<div style="display: block; margin-top: 50px; margin-bottom: 10px;">
+	<img style="padding-left: 15px;" src="1.png" />
+	<img style="padding-left: 15px;" src="2.png" />
+	<img style="padding-left: 15px;" src="3.png" />
+	<h3>Step 1: Search Google for a video and then click on the Video tab</h3>
+	<h3>Step 2: Copy all the text in the URL after the =</h3>
+	<h3>Step 3: Paste the text in the Box bellow and the click Watch!</h3>
+
+
+	</div>
+	
+	<hr style="width: 25%; margin-bottom: 30px;" />
+	<input type="text" id="myText" value="">
+	<button onclick="myFunction()">Watch!</button>
+
+	<div id="wrapper"></div>
+	<script type='text/javascript'>
+	function myFunction() {
+		var iframes = document.querySelectorAll('iframe');
+	for (var i = 0; i < iframes.length; i++) {
+		iframes[i].parentNode.removeChild(iframes[i]);
+	}
+		var frame = document.createElement('iframe');
+		frame.setAttribute("allowfullscreen", "true");
+		frame.src="https://www.youtube.com/embed/" + document.getElementById("myText").value;
+		frame.style.width = "640px";
+		frame.style.height = "480px";
+		document.getElementById('wrapper').appendChild(frame);
+	}
+</script>
+</body>
+</html>
