@@ -1,0 +1,113 @@
+html, body {
+	height: 100%;
+	
+}
+
+.logo {
+	padding-top 10px;
+	margin: 0px;
+	text-align: center;
+	font-size: 46px;
+	font-weight: bold;
+	font-family: Arial;
+	
+
+}
+
+.projectImg {
+	float: left;
+	padding-right: 20px;
+}
+
+.projectList {
+	overflow: auto;
+	width: 50%;
+	float: left;
+	padding-top: 20px;
+	margin: 20px
+
+
+}
+
+.projectList h2 {
+	text-align: center;
+}
+
+
+
+a {
+	color: #dbdbdb;
+	text-decoration: none;
+	font-size: 20px;
+	font-weight: bold;
+	font-family: Courier, Arial;
+	-webkit-user-select: none; /* Safari */        
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* IE10+/Edge */
+	user-select: none; /* Standard */
+}
+
+a:hover {
+	color: grey;
+}
+
+
+
+.footer {
+	font-size: 12px;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #212121;
+    color: white;
+    text-align: center;
+}
+
+.navbar {
+	height: 100%;
+	padding-top: 10px;
+	padding-left: 10px;
+	margin-left:0px;
+	float: left;
+}
+
+
+.bottom {
+	padding-bottom: 10px;
+}
+
+ul {
+	padding-top: 20px;
+	text-align: center;
+	list-style: none;
+	height: 100%;
+	width: 100px;
+	padding-left: 10px;
+	overflow: auto;
+	background-color: #323233;
+}
+
+body {
+	background-color: black;
+	color: white;
+}
+
+.activepage {
+	color: blue;
+	pointer-events: none;
+	cursor: default;
+}
+
+hr {
+	height: 5px;
+	background-color: white;
+}
+
+.LPJ {
+	text-align: right;
+	font-size: 17px;
+	padding-right: 10px;
+	padding-top: 2px;
+	margin:0px
+}
