@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html>
+ <head>
+ <link href="https://fonts.googleapis.com/css?family=Lalezar" rel="stylesheet">
+  <meta charset="utf-8"/>
+  <title>Heydin Anderson - PONG!</title>
+  <link rel="stylesheet" type="text/css" href="../../css/default.css">
+	<link rel="shortcut icon" href="../../pictures/icon.ico" type="image/x-icon">
+	<link rel="icon" href="../../pictures/icon.ico" type="image/x-icon">
+	<style>
+	
+	h1 {
+	-webkit-user-select: none; /* Safari */        
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* IE10+/Edge */
+	user-select: none; /* Standard */
+	color: white;
+	font-size: 50px;
+	font-family: 'Lalezar', cursive;
+	padding-bottom: 0px;
+	margin: 0px;
+	}
+	
+	</style>
+ </head>
+ <center>
+ <h1 class="logo">Heydin Anderson | PONG!</h1>
+ </center>
+<hr />
+<div class="navbar">
+<ul>
+  <li><a href="../../index.html">Home</a></li>
+  <li class="bottom"><a href="../../projects.html">Projects</a></li>
+  <li><a href="Pong.html"  class="activepage"><h3 class="LPJ">PONG!</h3></a></li>
+  <li><a href="../WatchYoutube/WatchYoutube.html"><h3 class="LPJ">Youtube</h3></a></li>
+</ul>
+</div>
+ <body style="text-align: center; background: black"> 
+ 
+ <center>
+   <canvas style="border-color:white; border-style: solid; background: black;" id="gamecanvas" width="1000" height="750"></canvas>
+   </center>
+   
+     <script>
+	var canvas = document.getElementById("gamecanvas");
+	var ctx = canvas.getContext("2d");
+	
+	var version = 1.1;
+	
+	var paused=false;
+	
+	var startImg = new Image();
+	var insImg = new Image();
+	var backImg = new Image();
+	var logoImg = new Image();
+	var muteImg = new Image();
+	var unmuteImg = new Image();
+	var mainmenuImg = new Image();
+	mainmenuImg.src = "mainmenu.png";
+	muteImg.src = "mute.png";
+	unmuteImg.src = "unmute.png"
+	logoImg.src = "logo.png";
+	insImg.src = "instructions.png";
+	startImg.src = "start.png";
+	backImg.src = "back.png";
+	var gameState = "menu"; // menu, game, instructions
+	
+	var gameLoop=0;
+	
+	var i = 0;
+	
+	//MENU BUTTONS
+	
+	var buttonX = [375,325,50,875,50,620]
+	var buttonY = [300,425,600,625,650,650]
+	var buttonWidth = [259,362,200,100,100,275]
+	var buttonHeight = [90,48,74,79,79,45]
+	
+	var mute = false;
+	
+	var canvasPos = getPosition(canvas);
+	
+	var loop = 0;
+	
+	var mouseX = 0;
+	var mouseY = 0;
+	var ballCreator=Math.round(Math.random());
+	var ball={x:500,y:375,r:20,dX:5,dY:5,s:5,returning:1}
+	
+	
+	if (ballCreator == 1){
+		ball.dX = -5;
+		ball.returning = 0;
+	}
+	ballCreator=Math.round(Math.random());
+	if (ballCreator == 1){
+		ball.dY = -5;
+	}
+	
+	var userP={x:10,y:50,w:35,h:150}
+	
+	var score = 0;
+	var scoreComputer = 0;
+	
+	var computerP={x:955,y:50,w:35,h:150}
+	
+	var temp2 = 0;
+	
+	
+	ctx.fillStyle = 'white';
+	
+	function getRndInteger(min, max) {
+		return Math.floor(Math.random() * (max - min + 1) ) + min;
+	}
+	
+	function drawBall() {
+		ball.x = ball.x + ball.dX;
+		ball.y = ball.y + ball.dY;
+		checkColision();
+		ctx.fillStyle = 'white';
+
+		ctx.beginPath();
+		//ctx.arc(ball.x, ball.y, ball.r, 0, 2 * Math.PI);
+		ctx.rect(ball.x, ball.y, ball.r, ball.r);
+		ctx.stroke();
+		ctx.fill();
+
+	}
+	
+	function drawUserPaddle() {
+		ctx.beginPath();
+		ctx.rect(10,userP.y,35,150);
+		ctx.stroke();
+		ctx.fill();
+	}
+	
+	function drawComputerPaddle() {
+		updateComputerLocation(computerP.y, ball.y, ball.x);
+		ctx.beginPath();
+		ctx.rect(955,computerP.y,35,150);
+		ctx.stroke();
+		ctx.fill();
+	}
+	
+	function drawBackground() {
+
+		ctx.beginPath();
+		ctx.fillStyle = 'white';
+		ctx.rect(500,10,10,40);
+		ctx.rect(500,70,10,40);
+		ctx.rect(500,140,10,40);
+		ctx.rect(500,210,10,40);
+		ctx.rect(500,280,10,40);
+		ctx.rect(500,350,10,40);
+		ctx.rect(500,420,10,40);
+		ctx.rect(500,490,10,40);
+		ctx.rect(500,560,10,40);
+		ctx.rect(500,630,10,40);
+		ctx.rect(500,700,10,40);
+		ctx.stroke();
+		ctx.fill();
+	}	
+	
+	
+	
+	function updateComputerLocation(computerY, ballY, ballX) {
+
+			
+			if (computerP.y+17.5 > ballY + temp2) {
+				computerP.y = computerP.y - 11;
+			}
+			if (computerP.y+17.5 < ballY + temp2) {
+				computerP.y = computerP.y + 11;
+			}
+			if (computerP.y > 590){
+				computerP.y = 590;
+
+			}	
+			if (computerP.y < 10){
+				computerP.y = 10;
+
+			}
+
+	}
+	function win(who) {
+		ball={x:500,y:375,r:20,dX:5,dY:5,s:5,returning:0}
+		if (who) {
+			ball.dX = 5;
+			ball.returning = 1;
+			
+
+			score++;
+		} else {
+
+			ball.dX = -5;
+			ball.returning = 0;
+			var audio = new Audio('pep.wav');
+			if (mute) {
+			} else {
+						if (mute) {
+			} else {
+			audio.play();
+			}
+			}
+			scoreComputer++;
+		}
+		
+
+
+}
+
+	
+	function drawScore() {
+	
+		ctx.font = "70px Lalezar";
+		ctx.fillStyle = 'white';
+		ctx.fillText(score,375,60);
+		ctx.fillText(scoreComputer,600,60);
+
+
+	}
+	
+	function drawPause(){
+		if (gameState == "menu") {
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		} else {
+		ctx.beginPath();
+		ctx.fillStyle='grey'
+		ctx.rect(0, 0, canvas.width, canvas.height);
+		ctx.stroke();
+		ctx.fill();
+		ctx.font = "100px Lalezar";
+		ctx.fillStyle='black'
+		ctx.fillText("PAUSED",85,150);
+		ctx.font = "50px Lalezar";
+		ctx.fillText("Press ESC to continue.",530,620);
+		ctx.drawImage(mainmenuImg, buttonX[5], buttonY[5]);
+		}
+
+	}
+	
+	function drawMenu() {
+		
+		paused = false;
+		ctx.fillStyle='white'
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.drawImage(logoImg, 80, -80);
+		ctx.drawImage(startImg, buttonX[0], buttonY[0]);
+		ctx.drawImage(insImg, buttonX[1], buttonY[1]);
+		if (mute){
+		ctx.drawImage(muteImg, buttonX[3], buttonY[3]);
+		} else {
+		ctx.drawImage(unmuteImg, buttonX[3], buttonY[3]);
+		}
+		ctx.font = "15px Courier New";
+		ctx.fillStyle='grey'
+		ctx.fillText("Made By Heydin Anderson ~ 2018", 365, 735);
+		ctx.fillText("V " + version, 15, 735);
+	}
+	
+	function drawInst() {
+		ctx.font = "100px Lalezar";
+		ctx.fillStyle='White';
+		ctx.fillText("INSTRUCTIONS: ",10,100);
+		ctx.font = "30px Lalezar";
+		//ctx.fillStyle='Grey';
+		ctx.fillText("Move you mouse to move your paddle, dont let the ball touch your side.",20,400);
+		ctx.fillText("Hit the other opponent's side to score. Press ESC to pause at any time!", 20,440);
+		ctx.drawImage(backImg, buttonX[2], buttonY[2]);
+
+	}
+	
+	setInterval(draw, 15); // 33 milliseconds = ~ 30 frames per sec
+
+	function draw() { 
+	if (gameState == "menu"){
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		drawMenu();
+	
+	}
+	if (gameState == "instructions") {
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		drawInst();
+
+	}
+	if (gameState == "game") {
+	
+			if (paused){
+				ctx.globalAlpha=1;
+				ctx.fillStyle='grey'
+				if (gameLoop == 0) {
+				ctx.globalAlpha=0.75;
+				drawPause();
+
+			}
+			gameLoop++;
+			ctx.globalAlpha=0.75;
+			ctx.clearRect(buttonX[4], buttonY[4], buttonWidth[4], buttonHeight[4]);
+			ctx.beginPath();
+			ctx.fillStyle='grey'
+			ctx.rect(buttonX[4], buttonY[4], buttonWidth[4], buttonHeight[4]);
+			
+			ctx.fill();
+			ctx.globalAlpha=1;
+				if (mute){
+				ctx.drawImage(muteImg, buttonX[4], buttonY[4]);
+				} else {
+				ctx.drawImage(unmuteImg, buttonX[4], buttonY[4]);
+				}
+			
+			} else {
+				gameLoop = 0;
+				ctx.globalAlpha=1;
+				ctx.fillStyle='white'
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				canvasPos = getPosition(canvas);
+				drawBackground();
+				drawUserPaddle();
+				drawComputerPaddle();
+				drawBall();
+				drawScore();
+			}
+		}
+	}
+
+
+function checkColision() {
+//If ball is touching walls
+	if (ball.x > 990) {
+		win(true);
+	}
+	if (ball.x < 10) {
+		win(false);
+	}
+	if (ball.y < 10) {
+		ball.dY = ball.s;
+		var audio = new Audio('plop.wav');
+					if (mute) {
+			} else {
+			audio.play();
+			}
+	}
+	if (ball.y > 735) {
+		ball.dY = -ball.s;
+		var audio = new Audio('plop.wav');
+					if (mute) {
+			} else {
+			audio.play();
+			}
+	}
+
+
+	if(RectCircleColliding(ball,userP)){
+		ball.returning = 1;
+		temp2 = getRndInteger(1, 15);
+		var audio = new Audio('bep.wav');
+					if (mute) {
+			} else {
+			audio.play();
+			}
+		ball.dX = ball.s;
+		ball.s = ball.s + 0.5;
+		if(ball.s > 10){
+			ball.s = ball.s - 0.25;
+		}
+
+	}
+	
+	if(RectCircleColliding(ball,computerP)){
+		ball.returning = 0;
+		var audio = new Audio('bep.wav');
+					if (mute) {
+			} else {
+			audio.play();
+			}
+		ball.dX = -ball.s;
+		ball.s = ball.s + 0.5;
+		if(ball.s > 10){
+			ball.s = ball.s - 0.25;
+		}
+	}
+	
+
+}
+
+	
+function RectCircleColliding(rect1,rect2){
+if (rect1.x < rect2.x + rect2.w &&
+   rect1.x + rect1.r > rect2.x &&
+   rect1.y < rect2.y + rect2.h &&
+   rect1.y + rect1.r > rect2.y) {
+    return true;
+}
+return false;
+	
+
+}
+
+
+
+//detect mouse movement.
+canvas.addEventListener("mouseup", checkClick);
+canvas.addEventListener("mousemove", setMousePosition, false);
+document.addEventListener('keydown', function(event) {
+    if (event.keyCode == 27) {
+        if (paused) {
+			paused = false;
+		} else {
+			paused= true;
+		}
+
+    }
+}, true);
+//get mouse position on mouse move
+function setMousePosition(e) {
+  userP.y = e.clientY - canvasPos.y;
+  userP.y = userP.y - 75;
+  mouseX = e.clientX - canvasPos.x;
+  mouseY = e.clientY - canvasPos.y;
+  if (userP.y > 590){
+	userP.y = 590;
+  }
+  
+   if (userP.y < 10){
+	userP.y = 10;
+  }
+ 
+}
+function checkClick(mouseEvent){
+    for(i = 0; i < buttonX.length; i++){
+        if(mouseX > buttonX[i] && mouseX < buttonX[i] + buttonWidth[i]){
+            if(mouseY > buttonY[i] && mouseY < buttonY[i] + buttonHeight[i]){
+			if (gameState == "menu"){
+			if (i == 0) {
+				gameState = "game";
+			}
+			if (i == 1) {
+				gameState = "instructions";
+			}
+			if (i == 3) {
+				if (mute){
+					mute = false;
+				} else {
+					mute = true;
+				}
+			}
+            }
+			if (gameState == "instructions"){
+				if (i == 2) {
+					gameState = "menu";
+					draw();
+				}
+			}
+			if (paused){
+				if (i == 4) {
+				if (mute){
+					mute = false;
+				} else {
+					mute = true;
+				}
+			}
+					if (i == 5) {
+					gameState = "menu";
+					paused = false;
+				}
+			}
+			
+			}
+        }
+    }
+}
+
+//get multiplier for mouse input into canvas
+function getPosition(el) {
+  var xPosition = 0;
+  var yPosition = 0;
+ 
+  while (el) {
+    xPosition += (el.offsetLeft - el.scrollLeft + el.clientLeft);
+    yPosition += (el.offsetTop - el.scrollTop + el.clientTop);
+    el = el.offsetParent;
+  }
+  return {
+    x: xPosition,
+    y: yPosition
+  };
+} 
+  </script>
+ </body>
+ <div class="footer">
+	<p>© 2018 Heydin Anderson - ALL RIGHTS RESERVED</p>
+</div>
+</html>
